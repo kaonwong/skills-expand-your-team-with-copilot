@@ -1,0 +1,243 @@
+name: 🐛 Bug Report
+description: Report a problem or issue with the school activities system functionality
+title: "[BUG] "
+labels: ["bug", "needs-triage"]
+projects: ["kaonwong/1"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Found a bug? Help us fix it quickly by providing detailed information. This template ensures our Copilot coding agent can identify and resolve the issue efficiently.
+
+  - type: input
+    id: bug-summary
+    attributes:
+      label: Bug Summary
+      description: A clear, concise description of what the bug is
+      placeholder: "Students cannot register for activities - signup button doesn't work"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: bug-severity
+    attributes:
+      label: Bug Severity
+      description: How serious is this bug's impact on the system?
+      options:
+        - Critical (System broken, no workaround)
+        - High (Major feature broken, some workaround exists)
+        - Medium (Feature partially works, minor impact)
+        - Low (Cosmetic issue, no functional impact)
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the bug behavior
+      placeholder: |
+        Example:
+        1. Go to the activities page (http://localhost:8000)
+        2. Click on "Register Student" button for any activity
+        3. Fill in student email: "test@mergington.edu"
+        4. Click "Register" button
+        5. See error message or no response
+      value: |
+        1. 
+        2. 
+        3. 
+        4. 
+        5. 
+        
+        **User Account Used:** (teacher/student/admin)
+        **Browser Used:** (Chrome/Firefox/Safari/Edge)
+        **Device Type:** (Desktop/Mobile/Tablet)
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What should happen when following the steps above?
+      placeholder: |
+        Example: After clicking "Register", the student should be added to the activity's participant list, a success message should appear, and the participant count should increase by 1.
+      value: |
+        **Expected Result:**
+        
+        **User Should See:**
+        
+        **System Should Do:**
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: What actually happens? Include any error messages.
+      placeholder: |
+        Example: 
+        - Nothing happens when clicking "Register" button
+        - Console shows error: "401 Unauthorized - Authentication required"
+        - Student is not added to participants list
+        - No feedback message is shown to user
+      value: |
+        **What Actually Happens:**
+        
+        **Error Messages (if any):**
+        
+        **Console Errors (F12 Developer Tools):**
+        
+        **Visual Issues:**
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected-features
+    attributes:
+      label: Affected Features
+      description: Which part of the system has the bug?
+      multiple: true
+      options:
+        - Student registration for activities
+        - Teacher login/authentication
+        - Activity display/filtering
+        - User interface/navigation
+        - Database operations
+        - Search functionality
+        - Mobile responsiveness
+        - Other functionality
+    validations:
+      required: true
+
+  - type: dropdown
+    id: user-types-affected
+    attributes:
+      label: User Types Affected
+      description: Which users experience this bug?
+      multiple: true
+      options:
+        - Teachers
+        - Students
+        - Administrators
+        - All users
+        - Anonymous/non-logged-in users
+    validations:
+      required: true
+
+  - type: textarea
+    id: debugging-info
+    attributes:
+      label: Technical Debugging Information
+      description: Any technical details that might help with diagnosis
+      placeholder: |
+        Example:
+        - Browser console errors (F12 → Console tab)
+        - Network errors (F12 → Network tab)
+        - Server logs or error messages
+        - Database connection issues
+        - API endpoint responses
+        - Authentication token problems
+      value: |
+        **Browser Console Errors:**
+        ```
+        (Paste any error messages from F12 → Console)
+        ```
+        
+        **Network Issues (F12 → Network):**
+        ```
+        (Note any failed requests, 404s, 500s, etc.)
+        ```
+        
+        **Server/API Responses:**
+        ```
+        (Any error responses from backend)
+        ```
+        
+        **Additional Technical Details:**
+    validations:
+      required: false
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Workaround (if any)
+      description: Is there a temporary way to work around this bug?
+      placeholder: |
+        Example: Teachers can manually add students by directly modifying the database, but this requires technical knowledge and is not practical for daily use.
+    validations:
+      required: false
+
+  - type: textarea
+    id: fix-suggestions
+    attributes:
+      label: Fix Suggestions & Implementation Hints
+      description: Any ideas about what might be causing this or how to fix it?
+      placeholder: |
+        Example:
+        - Check if authentication token is being passed correctly in signup requests
+        - Verify teacher login status before allowing registration
+        - Look at /activities/{activity_name}/signup endpoint in activities.py
+        - May need to fix JavaScript event handler for registration button
+        - Check database connection for participant updates
+      value: |
+        **Suspected Cause:**
+        
+        **Files That Might Need Changes:**
+        - 
+        
+        **Possible Solutions:**
+        - 
+        
+        **Related Code Areas:**
+        - 
+    validations:
+      required: false
+
+  - type: dropdown
+    id: bug-frequency
+    attributes:
+      label: Bug Frequency
+      description: How often does this bug occur?
+      options:
+        - Always (100% of the time)
+        - Usually (more than 75% of the time)
+        - Sometimes (25-75% of the time)  
+        - Rarely (less than 25% of the time)
+        - Once (happened only once so far)
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other information about the bug
+      placeholder: |
+        - When did this bug first appear?
+        - Does it happen with specific activities or all activities?
+        - Are there any recent changes that might have caused this?
+        - Screenshots or screen recordings if helpful
+        - Related issues or discussions
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: bug-checklist
+    attributes:
+      label: Bug Report Checklist
+      description: Confirm you've provided complete information for debugging
+      options:
+        - label: I have provided clear steps to reproduce the bug
+          required: true
+        - label: I have described both expected and actual behavior
+          required: true
+        - label: I have specified the bug severity and affected users
+          required: true
+        - label: I have checked browser console for any error messages
+          required: true
+        - label: I understand this will be fixed by a Copilot coding agent
+          required: true

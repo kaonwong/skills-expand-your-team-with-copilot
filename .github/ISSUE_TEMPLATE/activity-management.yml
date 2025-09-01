@@ -1,0 +1,241 @@
+name: 🏫 Activity Management
+description: Add new activities, modify existing ones, or remove activities from the school system
+title: "[ACTIVITY] "
+labels: ["enhancement", "activity-management", "needs-triage"]
+projects: ["kaonwong/1"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Manage school activities efficiently! This template helps our Copilot coding agent understand exactly what changes you need for the activities in the system.
+
+  - type: dropdown
+    id: action-type
+    attributes:
+      label: Action Type
+      description: What do you want to do with activities?
+      options:
+        - Add new activity
+        - Modify existing activity
+        - Remove/delete activity
+        - Bulk update multiple activities
+    validations:
+      required: true
+
+  - type: input
+    id: activity-name
+    attributes:
+      label: Activity Name
+      description: Name of the activity (for new activities, existing ones to modify, or ones to remove)
+      placeholder: "Robotics Club, Advanced Photography, Student Council"
+    validations:
+      required: true
+
+  - type: textarea
+    id: activity-details
+    attributes:
+      label: Activity Details
+      description: Complete information about the activity (for new or modified activities)
+      placeholder: |
+        Example for new activity:
+        **Description:** Learn robotics engineering and compete in regional competitions
+        **Schedule:** Wednesdays and Fridays, 3:30 PM - 5:30 PM  
+        **Days:** Wednesday, Friday
+        **Start Time:** 15:30
+        **End Time:** 17:30
+        **Max Participants:** 20
+        **Initial Participants:** emma@mergington.edu, john@mergington.edu
+        **Difficulty Level:** Intermediate (if applicable)
+        **Category:** Technology/STEM
+      value: |
+        **Description:** 
+        
+        **Schedule (human readable):** 
+        
+        **Days:** (Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday)
+        
+        **Start Time:** (24-hour format, e.g., 15:30)
+        
+        **End Time:** (24-hour format, e.g., 17:30)
+        
+        **Maximum Participants:** 
+        
+        **Initial Participants (if any):** 
+        - 
+        - 
+        
+        **Additional Properties:**
+        - Difficulty Level: (Beginner/Intermediate/Advanced or leave blank)
+        - Category: (Sports/Arts/Academic/Technology/Community)
+        - Special Requirements: 
+    validations:
+      required: false
+
+  - type: textarea
+    id: modification-details
+    attributes:
+      label: Modification Details (for existing activities)
+      description: What specifically needs to be changed in an existing activity?
+      placeholder: |
+        Example:
+        **Activity to Modify:** Chess Club
+        **Changes Needed:**
+        - Change schedule from "Mondays and Fridays" to "Tuesdays and Thursdays"
+        - Update time from "3:15 PM - 4:45 PM" to "3:30 PM - 5:00 PM"
+        - Increase max participants from 12 to 15
+        - Update description to include "tournament preparation"
+        - Add participants: sarah@mergington.edu, alex@mergington.edu
+        - Remove participant: old-student@mergington.edu
+      value: |
+        **Current Activity:** 
+        
+        **Specific Changes:**
+        - Schedule changes: 
+        - Time changes: 
+        - Participant limit changes: 
+        - Description updates: 
+        - Add participants: 
+        - Remove participants: 
+        - Other modifications: 
+    validations:
+      required: false
+
+  - type: textarea
+    id: removal-reason
+    attributes:
+      label: Removal Reason (for deleting activities)
+      description: Why is this activity being removed? Any special considerations?
+      placeholder: |
+        Example:
+        **Activity to Remove:** Old Programming Club
+        **Reason:** Replaced by new "Advanced Programming Class" with updated curriculum
+        **Current Participants:** 5 students - they should be moved to "Programming Class"
+        **Data Handling:** Archive participant data, don't delete completely
+      value: |
+        **Reason for Removal:**
+        
+        **Current Participants to Handle:**
+        
+        **Data/History Considerations:**
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Define exactly what "done" looks like for this activity change
+      placeholder: |
+        Example for new activity:
+        - [ ] "Robotics Club" appears in activities list
+        - [ ] Shows correct schedule: "Wednesdays and Fridays, 3:30 PM - 5:30 PM"
+        - [ ] Maximum 20 participants allowed
+        - [ ] Initial participants are pre-registered
+        - [ ] Activity is categorized correctly for filtering
+        - [ ] Teachers can register students for this activity
+        - [ ] Activity follows same format as existing activities
+      value: |
+        **Functional Requirements:**
+        - [ ] 
+        - [ ] 
+        - [ ] 
+        
+        **Data Requirements:**
+        - [ ] 
+        - [ ] 
+        
+        **UI/Display Requirements:**
+        - [ ] 
+        - [ ] 
+        
+        **Integration Requirements:**
+        - [ ] Works with existing search/filter functionality
+        - [ ] Compatible with teacher registration system
+        - [ ] Maintains data consistency
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation-guidance
+    attributes:
+      label: Implementation Guidance
+      description: Technical hints about where and how to make these changes
+      placeholder: |
+        Example:
+        - Add activity data to `initial_activities` dictionary in `src/backend/database.py`
+        - Follow existing format with `description`, `schedule`, `schedule_details`, `max_participants`, `participants`
+        - Ensure schedule_details has proper `days` array and `start_time`/`end_time` in 24-hour format
+        - If modifying existing activity, update the specific fields in the dictionary
+        - Test that new activity appears in frontend and can be filtered properly
+        - Verify teacher can register students for the new activity
+      value: |
+        **Files to Modify:**
+        - 
+        
+        **Data Structure Notes:**
+        - 
+        
+        **Testing Requirements:**
+        - 
+        
+        **Compatibility Considerations:**
+        - 
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority-level
+    attributes:
+      label: Priority Level
+      description: How urgent is this activity change?
+      options:
+        - High (Needed before next school term/semester)
+        - Medium (Needed within next few weeks)
+        - Low (General improvement when time allows)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact-scope
+    attributes:
+      label: Impact Scope
+      description: How many people will this change affect?
+      options:
+        - High impact (affects many students/teachers)
+        - Medium impact (affects specific group)
+        - Low impact (affects few people)
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other information about this activity change
+      placeholder: |
+        - Background on why this change is needed
+        - Related activities or dependencies
+        - Seasonal or timing considerations
+        - Equipment or resource requirements
+        - Teacher assignments or supervision needs
+        - Parent/school administration approval status
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: activity-checklist
+    attributes:
+      label: Activity Management Checklist
+      description: Confirm you've provided complete information
+      options:
+        - label: I have clearly specified what type of change is needed
+          required: true
+        - label: I have provided all necessary activity details
+          required: true
+        - label: I have defined acceptance criteria for the changes
+          required: true
+        - label: I have indicated priority and impact level
+          required: true
+        - label: I understand this will be implemented by a Copilot coding agent
+          required: true

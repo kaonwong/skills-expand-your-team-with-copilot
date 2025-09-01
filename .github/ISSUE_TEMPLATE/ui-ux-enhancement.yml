@@ -1,0 +1,208 @@
+name: 🎨 UI/UX Enhancement
+description: Request visual design improvements, styling changes, or user interface enhancements
+title: "[UI/UX] "
+labels: ["enhancement", "ui/ux", "needs-triage"]
+projects: ["kaonwong/1"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Request visual improvements to make the school activities system more user-friendly and appealing. This template ensures our Copilot coding agent has all the details needed for design implementation.
+
+  - type: input
+    id: ui-summary
+    attributes:
+      label: UI/UX Enhancement Summary
+      description: Brief description of the visual or interface improvement you want
+      placeholder: "Update school colors from blue to white and lime green theme"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: enhancement-type
+    attributes:
+      label: Type of Enhancement
+      description: What kind of visual change are you requesting?
+      options:
+        - Color scheme / Branding (school colors, logos, theme)
+        - Layout / Positioning (arrangement of elements)
+        - Typography (fonts, text styling)
+        - Icons / Graphics (visual elements, mascots)
+        - Animation / Interactions (hover effects, transitions)
+        - Accessibility (screen reader, contrast, mobile)
+        - Overall design modernization
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-issue
+    attributes:
+      label: Current Design Issue
+      description: What's wrong with the current design? What user experience problem does it cause?
+      placeholder: |
+        Example: The website currently uses blue colors, but our school colors are white and lime green. This doesn't represent our school identity properly and students/parents expect to see our actual school colors.
+      value: |
+        **Current Problem:**
+        
+        **User Impact:**
+        - 
+        
+        **Why Change is Needed:**
+        - 
+    validations:
+      required: true
+
+  - type: textarea
+    id: desired-design
+    attributes:
+      label: Desired Design/Appearance
+      description: Describe exactly how you want it to look. Be as specific as possible.
+      placeholder: |
+        Example:
+        - Primary color: Lime green (#32CD32)
+        - Secondary color: White (#FFFFFF)  
+        - Accent colors: Dark green for text/contrast
+        - Header should be lime green background with white text
+        - Activity cards should have white background with lime green borders
+        - Buttons should be lime green with white text
+        - Add school mascot from https://octodex.github.com/ in the header or footer
+      value: |
+        **Visual Requirements:**
+        - Primary colors: 
+        - Secondary colors:
+        - Typography:
+        - Layout changes:
+        - Interactive elements:
+        
+        **Specific Elements to Change:**
+        - Header: 
+        - Navigation: 
+        - Activity cards:
+        - Buttons:
+        - Forms:
+        - Footer:
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Define exactly what "done" looks like for this design change
+      placeholder: |
+        Example:
+        - [ ] Header background changed to lime green (#32CD32)
+        - [ ] Header text changed to white for proper contrast
+        - [ ] Activity cards have lime green borders (2px solid)
+        - [ ] All buttons use lime green background with white text
+        - [ ] Footer includes a mascot image from octodex.github.com
+        - [ ] Design maintains accessibility standards (WCAG contrast ratios)
+        - [ ] Design is responsive and works on mobile devices
+        - [ ] All existing functionality continues to work unchanged
+      value: |
+        **Visual Changes Required:**
+        - [ ] 
+        - [ ] 
+        - [ ] 
+        
+        **Quality Standards:**
+        - [ ] Maintains accessibility standards
+        - [ ] Responsive design (mobile-friendly)
+        - [ ] All existing functionality preserved
+        - [ ] Browser compatibility maintained
+        
+        **Assets/Resources:**
+        - [ ] 
+        - [ ] 
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation-guidance
+    attributes:
+      label: Implementation Guidance
+      description: Technical hints about where/how to make these changes
+      placeholder: |
+        Example:
+        - Main styles are in `src/static/styles.css`
+        - Header styles likely in `.header` or `header` CSS selectors
+        - Activity card styles probably in `.activity-card` class
+        - Button styles in `.button` or similar classes
+        - Consider using CSS custom properties (variables) for consistent color scheme
+        - Mascot image can be added to `src/static/` folder and referenced in HTML
+        - Test with browser dev tools to verify contrast ratios
+      value: |
+        **Files to Modify:**
+        - 
+        
+        **CSS Selectors/Classes:**
+        - 
+        
+        **Assets Needed:**
+        - 
+        
+        **Testing Considerations:**
+        - 
+    validations:
+      required: false
+
+  - type: input
+    id: brand-assets
+    attributes:
+      label: Brand Assets/References
+      description: Links to school colors, logos, mascots, or design inspiration
+      placeholder: "School colors: lime green #32CD32, Mascots: https://octodex.github.com/"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency Level
+      description: How urgent is this visual change?
+      options:
+        - High (Needed for upcoming event/school function)
+        - Medium (Improves school branding significantly)
+        - Low (General improvement when time allows)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: device-testing
+    attributes:
+      label: Device/Browser Testing Needed
+      description: Where should this design be tested?
+      options:
+        - label: Desktop browsers (Chrome, Firefox, Safari, Edge)
+        - label: Mobile devices (phones and tablets)
+        - label: Accessibility tools (screen readers)
+        - label: High contrast mode compatibility
+
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Context
+      description: Any other design details, constraints, or special considerations
+      placeholder: |
+        - Design should reflect school spirit and pride
+        - Must work for all user types (teachers, students, parents)
+        - Consider seasonal variations if applicable
+        - Any specific school events or traditions to incorporate
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: ui-requirements-checklist
+    attributes:
+      label: Design Requirements Checklist
+      description: Confirm you've provided complete design specifications
+      options:
+        - label: I have clearly described the current design problem
+          required: true
+        - label: I have specified exactly how I want it to look
+          required: true
+        - label: I have provided brand colors/assets or references
+          required: true
+        - label: I have defined acceptance criteria for the changes
+          required: true

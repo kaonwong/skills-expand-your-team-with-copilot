@@ -1,0 +1,253 @@
+name: 📝 Content Update
+description: Update text, descriptions, documentation, or informational content in the system
+title: "[CONTENT] "
+labels: ["documentation", "content", "needs-triage"]
+projects: ["kaonwong/1"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Keep content fresh and accurate! This template helps our Copilot coding agent understand exactly what text or documentation needs to be updated in the school activities system.
+
+  - type: dropdown
+    id: content-type
+    attributes:
+      label: Content Type
+      description: What kind of content needs updating?
+      options:
+        - Website text/copy (headings, descriptions, labels)
+        - Activity descriptions
+        - User interface messages/prompts
+        - Documentation (README, guides, help text)
+        - Error messages
+        - Form labels/placeholders
+        - Footer/header information
+        - Other informational content
+    validations:
+      required: true
+
+  - type: input
+    id: content-location
+    attributes:
+      label: Content Location
+      description: Where is this content located? (page, file, section)
+      placeholder: "Homepage header, Activity card descriptions, Login form, README.md file"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-content
+    attributes:
+      label: Current Content
+      description: What does the text currently say? (copy and paste exact current text)
+      placeholder: |
+        Example:
+        Current: "Mergington High School - Extracurricular Activities"
+        Location: Main page header (src/static/index.html)
+      value: |
+        **Current Text:**
+        ```
+        (Paste the exact current text here)
+        ```
+        
+        **File/Location:** 
+        
+        **Line Number (if known):** 
+    validations:
+      required: true
+
+  - type: textarea
+    id: new-content
+    attributes:
+      label: New Content
+      description: What should the text say instead? Provide the exact new text.
+      placeholder: |
+        Example:
+        New: "Mergington High School - Join Our Amazing Extracurricular Activities!"
+        Reason: More engaging and encouraging for students
+      value: |
+        **New Text:**
+        ```
+        (Provide the exact new text here)
+        ```
+        
+        **Reason for Change:**
+        
+        **Tone/Style Notes:**
+    validations:
+      required: true
+
+  - type: textarea
+    id: change-rationale
+    attributes:
+      label: Change Rationale
+      description: Why does this content need to be updated?
+      placeholder: |
+        Example:
+        - Current text is outdated (references old school year)
+        - Content is confusing to students and parents
+        - Need to add important information about registration deadlines
+        - Grammar/spelling errors need correction
+        - Tone doesn't match school's friendly approach
+        - Missing accessibility descriptions for screen readers
+      value: |
+        **Problem with Current Content:**
+        
+        **Impact on Users:**
+        
+        **Benefits of New Content:**
+        
+        **Urgency Reason:**
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Define exactly what "done" looks like for this content update
+      placeholder: |
+        Example:
+        - [ ] Header text changed to "Mergington High School - Join Our Amazing Extracurricular Activities!"
+        - [ ] Text appears correctly on all pages where it's used
+        - [ ] Mobile display looks good with new longer text
+        - [ ] No spelling or grammar errors
+        - [ ] Maintains consistent style with rest of site
+        - [ ] Accessibility not impacted (screen readers work correctly)
+      value: |
+        **Content Changes Required:**
+        - [ ] 
+        - [ ] 
+        - [ ] 
+        
+        **Quality Standards:**
+        - [ ] Spelling and grammar are correct
+        - [ ] Tone is appropriate for school environment
+        - [ ] Content is clear and easy to understand
+        - [ ] Mobile/responsive display works correctly
+        - [ ] Accessibility standards maintained
+        
+        **Verification Steps:**
+        - [ ] 
+        - [ ] 
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation-guidance
+    attributes:
+      label: Implementation Guidance
+      description: Technical hints about where to make these changes
+      placeholder: |
+        Example:
+        - Main page text is in `src/static/index.html`
+        - Look for `<h1>` and `<h2>` tags in the header section
+        - Activity descriptions are in `src/backend/database.py` in `initial_activities`
+        - Error messages might be in JavaScript files or Python API responses
+        - Check if text appears in multiple places that all need updating
+      value: |
+        **Files to Check/Modify:**
+        - 
+        
+        **Search Terms:** (to find the content)
+        - 
+        
+        **Multiple Locations:** (if text appears in several places)
+        - 
+        
+        **Special Considerations:**
+        - 
+    validations:
+      required: false
+
+  - type: dropdown
+    id: content-scope
+    attributes:
+      label: Content Scope
+      description: How much content needs updating?
+      options:
+        - Single word/phrase
+        - Single sentence or paragraph
+        - Multiple related text blocks
+        - Entire page or section
+        - Site-wide terminology change
+    validations:
+      required: true
+
+  - type: dropdown
+    id: content-urgency
+    attributes:
+      label: Update Urgency
+      description: How urgent is this content update?
+      options:
+        - Critical (contains errors or misinformation)
+        - High (needed for upcoming event or deadline)
+        - Medium (improves user experience)
+        - Low (general improvement when time allows)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: content-considerations
+    attributes:
+      label: Content Considerations
+      description: Special aspects of this content update
+      options:
+        - label: Content affects accessibility (screen readers, etc.)
+        - label: Content includes dates or time-sensitive information
+        - label: Content appears in multiple locations
+        - label: Content change affects SEO or search functionality
+        - label: Content includes external links that need verification
+        - label: Content requires approval from school administration
+
+  - type: textarea
+    id: related-updates
+    attributes:
+      label: Related Content Updates
+      description: Are there other content changes that should be made at the same time?
+      placeholder: |
+        Example:
+        - If updating activity descriptions, also check activity names for consistency
+        - If changing school contact info, update both header and footer
+        - If updating terminology, check all related pages for similar changes
+      value: |
+        **Related Changes:**
+        
+        **Consistency Checks:**
+        
+        **Dependencies:**
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other information about this content update
+      placeholder: |
+        - Background on why content needs updating
+        - Style guide or brand voice considerations
+        - Approval status from school administration
+        - Deadlines or timing requirements
+        - Examples from other school websites
+        - Translation or multilingual considerations
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: content-checklist
+    attributes:
+      label: Content Update Checklist
+      description: Confirm you've provided complete information for content changes
+      options:
+        - label: I have provided the exact current text that needs changing
+          required: true
+        - label: I have provided the exact new text to use instead
+          required: true
+        - label: I have explained why this change is needed
+          required: true
+        - label: I have specified the location/file where content is found
+          required: true
+        - label: I have defined acceptance criteria for the changes
+          required: true

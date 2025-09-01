@@ -1,0 +1,146 @@
+name: 🚀 Feature Request
+description: Request a new feature or enhancement for the school activities system
+title: "[FEATURE] "
+labels: ["enhancement", "needs-triage"]
+projects: ["kaonwong/1"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a new feature! This template helps provide all the details needed for our Copilot coding agent to implement your request efficiently.
+
+  - type: input
+    id: feature-summary
+    attributes:
+      label: Feature Summary
+      description: A brief, clear description of the feature you'd like to see added
+      placeholder: "Add difficulty levels for activities (Beginner, Intermediate, Advanced)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-description
+    attributes:
+      label: Problem Description
+      description: What problem does this feature solve? What user need does it address?
+      placeholder: |
+        Example: Teachers want to organize activities by difficulty level because we have both freshmen and seniors attending the same activities. Some students need beginner-level activities while others are ready for advanced challenges.
+      value: |
+        **User Story:** As a [teacher/student/admin], I want to [desired action] so that [benefit/outcome].
+        
+        **Current Problem:** 
+        
+        **Impact:** This affects [who] when [situation].
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Define what "done" looks like for this feature. Be specific about expected behavior.
+      placeholder: |
+        Example:
+        - [ ] Add optional difficulty field to activity data structure (Beginner, Intermediate, Advanced)
+        - [ ] Activities without difficulty level should work as before (all levels)
+        - [ ] Add difficulty filter in left sidebar with options: All, Beginner, Intermediate, Advanced
+        - [ ] "All" option shows only activities with no specified difficulty
+        - [ ] Difficulty level should NOT be displayed on activity cards
+        - [ ] Filter should work with existing category and time filters
+      value: |
+        **Must Have:**
+        - [ ] 
+        - [ ] 
+        
+        **Should Have:**
+        - [ ] 
+        - [ ] 
+        
+        **Nice to Have:**
+        - [ ] 
+        - [ ] 
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation-hints
+    attributes:
+      label: Implementation Hints & Suggestions
+      description: Any technical details, suggestions, or constraints to consider
+      placeholder: |
+        Example:
+        - Modify `initial_activities` in `src/backend/database.py` to include optional `difficulty` field
+        - Update activity card rendering in `src/static/app.js` to handle difficulty data
+        - Add new filter buttons in `src/static/index.html` sidebar
+        - Ensure backward compatibility with existing activities without difficulty level
+        - Consider using CSS classes like `.difficulty-beginner` for potential future styling
+      value: |
+        **Technical Considerations:**
+        - 
+        
+        **Files Likely to Change:**
+        - 
+        
+        **Suggested Approach:**
+        - 
+        
+        **Compatibility Notes:**
+        - 
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority Level
+      description: How important is this feature for the school activities system?
+      options:
+        - High (Essential for daily operations)
+        - Medium (Improves user experience significantly)
+        - Low (Nice to have enhancement)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected-users
+    attributes:
+      label: Who would use this feature?
+      description: Select all user types that would benefit from this feature
+      multiple: true
+      options:
+        - Teachers (staff managing activities)
+        - Students (viewing and registering for activities)  
+        - Administrators (school management)
+        - All users
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other information, mockups, examples from other systems, or related issues
+      placeholder: |
+        - Link to related issues or discussions
+        - Screenshots or mockups if applicable
+        - Examples from other school systems
+        - Potential future enhancements this enables
+        - Any limitations or constraints to be aware of
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: requirements-checklist
+    attributes:
+      label: Requirements Checklist
+      description: Confirm you've provided sufficient detail for implementation
+      options:
+        - label: I have provided a clear problem description
+          required: true
+        - label: I have defined specific acceptance criteria
+          required: true
+        - label: I have indicated the priority and affected users
+          required: true
+        - label: I understand this will be implemented by a Copilot coding agent
+          required: true
