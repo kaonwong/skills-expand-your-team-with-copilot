@@ -2,36 +2,53 @@
 MongoDB database configuration and setup for Mergington High School API
 """
 
-from pymongo import MongoClient
-from argon2 import PasswordHasher
-
-# Connect to MongoDB
-client = MongoClient('mongodb://localhost:27017/')
-db = client['mergington_high']
-activities_collection = db['activities']
-teachers_collection = db['teachers']
+try:
+    from pymongo import MongoClient
+    from argon2 import PasswordHasher
+    
+    # Connect to MongoDB
+    client = MongoClient('mongodb://localhost:27017/')
+    db = client['mergington_high']
+    activities_collection = db['activities']
+    teachers_collection = db['teachers']
+    
+    # Test connection
+    client.admin.command('ping')
+    USING_MONGODB = True
+    
+except Exception:
+    # Fallback to mock database for development
+    from .database_mock import activities_collection, teachers_collection, hash_password, initial_activities, initial_teachers
+    USING_MONGODB = False
 
 # Methods
-def hash_password(password):
-    """Hash password using Argon2"""
-    ph = PasswordHasher()
-    return ph.hash(password)
+if USING_MONGODB:
+    def hash_password(password):
+        """Hash password using Argon2"""
+        ph = PasswordHasher()
+        return ph.hash(password)
 
 def init_database():
     """Initialize database if empty"""
+    
+    if USING_MONGODB:
+        # Initialize activities if empty
+        if activities_collection.count_documents({}) == 0:
+            for name, details in initial_activities.items():
+                activities_collection.insert_one({"_id": name, **details})
+                
+        # Initialize teacher accounts if empty
+        if teachers_collection.count_documents({}) == 0:
+            for teacher in initial_teachers:
+                teachers_collection.insert_one({"_id": teacher["username"], **teacher})
+    else:
+        # Mock database initialization is handled in database_mock.py
+        from .database_mock import init_database as init_mock
+        init_mock()
 
-    # Initialize activities if empty
-    if activities_collection.count_documents({}) == 0:
-        for name, details in initial_activities.items():
-            activities_collection.insert_one({"_id": name, **details})
-            
-    # Initialize teacher accounts if empty
-    if teachers_collection.count_documents({}) == 0:
-        for teacher in initial_teachers:
-            teachers_collection.insert_one({"_id": teacher["username"], **teacher})
-
-# Initial database if empty
-initial_activities = {
+if USING_MONGODB:
+    # Initial database if empty
+    initial_activities = {
     "Chess Club": {
         "description": "Learn strategies and compete in chess tournaments",
         "schedule": "Mondays and Fridays, 3:15 PM - 4:45 PM",
@@ -177,24 +194,37 @@ initial_activities = {
     }
 }
 
-initial_teachers = [
-    {
-        "username": "mrodriguez",
-        "display_name": "Ms. Rodriguez",
-        "password": hash_password("art123"),
-        "role": "teacher"
-     },
-    {
-        "username": "mchen",
-        "display_name": "Mr. Chen",
-        "password": hash_password("chess456"),
-        "role": "teacher"
-    },
-    {
-        "username": "principal",
-        "display_name": "Principal Martinez",
-        "password": hash_password("admin789"),
-        "role": "admin"
-    }
-]
+if USING_MONGODB:
+    initial_teachers = [
+        {
+            "username": "jsmith",
+            "display_name": "Mr. Smith",
+            "password": hash_password("teacher123"),
+            "role": "teacher"
+        },
+        {
+            "username": "ajohnson",
+            "display_name": "Ms. Johnson",
+            "password": hash_password("science456"),
+            "role": "teacher"
+        },
+        {
+            "username": "mrodriguez",
+            "display_name": "Ms. Rodriguez",
+            "password": hash_password("art123"),
+            "role": "teacher"
+         },
+        {
+            "username": "mchen",
+            "display_name": "Mr. Chen",
+            "password": hash_password("chess456"),
+            "role": "teacher"
+        },
+        {
+            "username": "principal",
+            "display_name": "Principal Martinez",
+            "password": hash_password("admin789"),
+            "role": "admin"
+        }
+    ]
 
