@@ -607,8 +607,7 @@ footer {
 
 .category-filters,
 .day-filters,
-.time-filters,
-.mode-toggle {
+.time-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -616,8 +615,7 @@ footer {
 
 .category-filter,
 .day-filter,
-.time-filter,
-.mode-button {
+.time-filter {
   background-color: var(--background);
   border: 1px solid var(--border);
   color: var(--text-primary);
@@ -630,8 +628,7 @@ footer {
 
 .category-filter.active,
 .day-filter.active,
-.time-filter.active,
-.mode-button.active {
+.time-filter.active {
   background-color: var(--primary);
   color: white;
   border-color: var(--primary-dark);
@@ -639,47 +636,13 @@ footer {
 
 .category-filter:hover,
 .day-filter:hover,
-.time-filter:hover,
-.mode-button:hover {
+.time-filter:hover {
   background-color: var(--primary-light);
   color: white;
 }
 
 .time-filters {
   width: 100%;
-}
-
-/* Group mode styles */
-.category-group {
-  margin-bottom: 20px;
-}
-
-.category-group-header {
-  background-color: var(--primary);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 8px 8px 0 0;
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.category-group-activities {
-  border: 1px solid var(--border);
-  border-top: none;
-  border-radius: 0 0 8px 8px;
-  padding: 10px;
-  background-color: var(--surface);
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 15px;
-}
-
-.category-group .activity-card {
-  margin-bottom: 0;
 }
 
 .reset-button {
