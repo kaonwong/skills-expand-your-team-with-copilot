@@ -210,9 +210,8 @@ section h3 {
 }
 
 #activities-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 15px;
+  column-count: 3;
+  column-gap: 15px;
   width: 100%;
 }
 
@@ -223,12 +222,13 @@ section h3 {
   background-color: var(--surface);
   display: flex;
   flex-direction: column;
-  height: 100%;
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   position: relative;
   overflow: hidden;
   font-size: 0.85rem;
+  break-inside: avoid;
+  margin-bottom: 15px;
 }
 
 .activity-card:hover {
@@ -656,14 +656,13 @@ footer {
 
 /* When in group mode, arrange category groups in a grid */
 #activities-list.group-mode {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 20px;
-  align-items: start;
+  column-count: 3;
+  column-gap: 20px;
 }
 
 #activities-list.group-mode .category-group {
-  margin-bottom: 0;
+  margin-bottom: 15px;
+  break-inside: avoid;
 }
 
 .category-group-header {
@@ -710,6 +709,17 @@ footer {
   background-color: var(--border-focus);
 }
 
+/* Tablet layout */
+@media (max-width: 1024px) and (min-width: 768px) {
+  #activities-list {
+    column-count: 2;
+  }
+
+  #activities-list.group-mode {
+    column-count: 2;
+  }
+}
+
 /* Responsive adjustments for mobile */
 @media (max-width: 767px) {
   .sidebar-filters {
@@ -721,12 +731,12 @@ footer {
   }
 
   #activities-list {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    column-count: 1;
   }
 
   /* In group mode on mobile, stack groups vertically */
   #activities-list.group-mode {
-    grid-template-columns: 1fr;
+    column-count: 1;
   }
 
   .sidebar-filters {
