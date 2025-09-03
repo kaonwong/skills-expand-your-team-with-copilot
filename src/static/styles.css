@@ -591,8 +591,284 @@ button {
 #login-modal .modal-content h3 {
   color: var(--primary);
   font-size: 1.2rem;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   text-align: center;
+  font-weight: 600;
+}
+
+/* Form Styling */
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  transition: color 0.3s ease;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background-color: var(--surface);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(50, 205, 50, 0.1);
+  background-color: var(--surface);
+}
+
+.form-group input:focus + label,
+.form-group input:valid + label {
+  color: var(--primary);
+}
+
+.form-group input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* Form submit button styling */
+#login-form button[type="submit"],
+#signup-form button[type="submit"] {
+  width: 100%;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+#login-form button[type="submit"]:hover,
+#signup-form button[type="submit"]:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(50, 205, 50, 0.3);
+}
+
+#login-form button[type="submit"]:active,
+#signup-form button[type="submit"]:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(50, 205, 50, 0.2);
+}
+
+/* Add ripple effect to buttons */
+#login-form button[type="submit"]::before,
+#signup-form button[type="submit"]::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+#login-form button[type="submit"]:active::before,
+#signup-form button[type="submit"]:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Enhanced modal content styling */
+.modal-content {
+  background-color: var(--surface);
+  padding: 24px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  transform: translateY(-20px);
+  transition: transform 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+}
+
+/* Dark theme form adjustments */
+body.dark-theme .form-group input {
+  background-color: var(--secondary-light);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+body.dark-theme .form-group input:focus {
+  background-color: var(--secondary-light);
+  border-color: var(--primary);
+}
+
+body.dark-theme .form-group label {
+  color: var(--text-primary);
+}
+
+body.dark-theme .form-group input::placeholder {
+  color: var(--text-secondary);
+}
+
+/* Dark theme modal adjustments */
+body.dark-theme .modal-content {
+  background-color: var(--secondary);
+  border-color: var(--border);
+}
+
+/* Authentication tabs styling */
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.auth-tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 600;
+}
+
+.auth-tab:hover {
+  background-color: var(--background);
+}
+
+/* Authentication forms */
+.auth-form {
+  display: none;
+}
+
+.auth-form.active {
+  display: block;
+}
+
+/* Authentication links */
+.auth-links {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.auth-links a {
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 14px;
+  display: block;
+  margin: 5px 0;
+  transition: color 0.3s ease;
+}
+
+.auth-links a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+/* Form select styling */
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: var(--surface);
+  color: var(--text-primary);
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23666' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(50, 205, 50, 0.2);
+}
+
+/* Dark theme select adjustments */
+body.dark-theme select {
+  background-color: var(--secondary-light);
+  color: var(--text-primary);
+  border-color: var(--border);
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23999' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+}
+
+/* Close modal buttons for new modals */
+.close-register-modal,
+.close-forgot-password-modal {
+  color: var(--text-secondary);
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  transition: color 0.3s ease;
+}
+
+.close-register-modal:hover,
+.close-forgot-password-modal:hover {
+  color: var(--text-primary);
+}
+
+/* Forgot password steps */
+#forgot-password-step-1,
+#forgot-password-step-2 {
+  min-height: 200px;
+}
+
+/* Message styling improvements */
+.message {
+  padding: 12px;
+  border-radius: 4px;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.message.success {
+  background-color: var(--success-light);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.message.error {
+  background-color: var(--error-light);
+  color: var(--error);
+  border: 1px solid var(--error);
+}
+
+.message.info {
+  background-color: var(--info-light);
+  color: var(--info);
+  border: 1px solid var(--info);
 }
 
 /* Hidden class - critical for showing/hiding elements */
@@ -953,9 +1229,67 @@ footer {
   font-size: 0.7rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  position: relative;
-  overflow: hidden;
-  line-height: 1.2;
+}
+
+.calendar-activity:hover {
+  background-color: var(--primary);
+  transform: scale(1.02);
+}
+
+/* Additional form enhancements */
+.form-group input:valid {
+  border-color: var(--success);
+}
+
+.form-group input:invalid:not(:placeholder-shown) {
+  border-color: var(--error);
+}
+
+/* Loading state for forms */
+.form-loading button[type="submit"] {
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-loading button[type="submit"]::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Mobile responsiveness for modals */
+@media (max-width: 480px) {
+  .modal-content {
+    margin: 20px;
+    padding: 20px;
+    max-width: calc(100vw - 40px);
+    width: auto;
+  }
+  
+  .form-group input {
+    padding: 14px 16px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  #login-form button[type="submit"],
+  #signup-form button[type="submit"] {
+    padding: 14px 24px;
+    font-size: 16px;
+  }
 }
 
 .calendar-activity:hover {

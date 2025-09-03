@@ -8,6 +8,8 @@ from argon2 import PasswordHasher
 # Use in-memory storage instead of MongoDB
 activities_data = {}
 teachers_data = {}
+students_data = {}
+password_reset_tokens = {}  # Store password reset tokens temporarily
 
 # Simple in-memory collections simulation
 class InMemoryCollection:
@@ -61,8 +63,21 @@ class InMemoryCollection:
                     for field, value in update['$pull'].items():
                         if field in self.data[key] and value in self.data[key][field]:
                             self.data[key][field].remove(value)
+                elif '$set' in update:
+                    for field, value in update['$set'].items():
+                        self.data[key][field] = value
                 return type('UpdateResult', (), {'modified_count': 1})()
         return type('UpdateResult', (), {'modified_count': 0})()
+    
+    def insert_one(self, document):
+        """Insert a new document"""
+        if '_id' in document:
+            key = document['_id']
+            doc = document.copy()
+            del doc['_id']
+            self.data[key] = doc
+            return type('InsertResult', (), {'inserted_id': key})()
+        return None
     
     def aggregate(self, pipeline):
         """Simple aggregation pipeline"""
@@ -108,12 +123,52 @@ class InMemoryCollection:
 # Create in-memory collections
 activities_collection = InMemoryCollection(activities_data)
 teachers_collection = InMemoryCollection(teachers_data)
+students_collection = InMemoryCollection(students_data)
 
 # Methods
 def hash_password(password):
     """Hash password using Argon2"""
     ph = PasswordHasher()
     return ph.hash(password)
+
+def verify_password(password, hashed_password):
+    """Verify password against hash"""
+    ph = PasswordHasher()
+    try:
+        return ph.verify(hashed_password, password)
+    except:
+        return False
+
+def generate_reset_token():
+    """Generate a random reset token"""
+    import secrets
+    return secrets.token_urlsafe(32)
+
+def store_reset_token(email, token):
+    """Store password reset token with expiration"""
+    import time
+    password_reset_tokens[token] = {
+        'email': email,
+        'expires': time.time() + 3600  # 1 hour expiration
+    }
+    return token
+
+def validate_reset_token(token):
+    """Validate and return email for reset token"""
+    import time
+    if token in password_reset_tokens:
+        token_data = password_reset_tokens[token]
+        if time.time() < token_data['expires']:
+            return token_data['email']
+        else:
+            # Token expired, remove it
+            del password_reset_tokens[token]
+    return None
+
+def clear_reset_token(token):
+    """Clear used reset token"""
+    if token in password_reset_tokens:
+        del password_reset_tokens[token]
 
 def init_database():
     """Initialize database if empty"""
@@ -124,6 +179,11 @@ def init_database():
         for teacher in initial_teachers:
             username = teacher.pop('username')
             teachers_data[username] = teacher
+    
+    if not students_data:
+        for student in initial_students:
+            email = student.pop('email')
+            students_data[email] = student
 
 # Initial database data
 initial_activities = {
@@ -290,5 +350,32 @@ initial_teachers = [
         "display_name": "Principal Martinez",
         "password": hash_password("admin789"),
         "role": "admin"
+    }
+]
+
+initial_students = [
+    {
+        "email": "alex@mergington.edu",
+        "first_name": "Alex",
+        "last_name": "Smith",
+        "password": hash_password("student123"),
+        "grade": "10",
+        "phone": "555-0101"
+    },
+    {
+        "email": "sarah@mergington.edu",
+        "first_name": "Sarah",
+        "last_name": "Johnson",
+        "password": hash_password("student456"),
+        "grade": "11",
+        "phone": "555-0102"
+    },
+    {
+        "email": "emma@mergington.edu",
+        "first_name": "Emma",
+        "last_name": "Williams",
+        "password": hash_password("student789"),
+        "grade": "12",
+        "phone": "555-0103"
     }
 ]
