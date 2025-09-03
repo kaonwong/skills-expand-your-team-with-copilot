@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 import os
 from pathlib import Path
-from .backend import routers, database
+from backend import routers, database
 
 # Initialize web host
 app = FastAPI(
@@ -33,3 +33,8 @@ def root():
 # Include routers
 app.include_router(routers.activities.router)
 app.include_router(routers.auth.router)
+
+# Run the application
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)

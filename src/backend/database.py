@@ -1,15 +1,51 @@
 """
-MongoDB database configuration and setup for Mergington High School API
+In-memory database configuration for Mergington High School API
+All data is stored in memory and will be reset when the server restarts.
 """
 
-from pymongo import MongoClient
 from argon2 import PasswordHasher
 
-# Connect to MongoDB
-client = MongoClient('mongodb://localhost:27017/')
-db = client['mergington_high']
-activities_collection = db['activities']
-teachers_collection = db['teachers']
+# Use in-memory storage instead of MongoDB
+activities_data = {}
+teachers_data = {}
+
+# Simple in-memory collections simulation
+class InMemoryCollection:
+    def __init__(self, data_store):
+        self.data = data_store
+    
+    def count_documents(self, filter_dict):
+        return len(self.data)
+    
+    def insert_one(self, document):
+        doc_id = document.get("_id", len(self.data))
+        self.data[doc_id] = document
+        return type('InsertResult', (), {'inserted_id': doc_id})()
+    
+    def find_one(self, filter_dict):
+        doc_id = filter_dict.get("_id")
+        return self.data.get(doc_id)
+    
+    def find(self, filter_dict=None):
+        if filter_dict is None:
+            return list(self.data.values())
+        return [doc for doc in self.data.values() if all(doc.get(k) == v for k, v in filter_dict.items())]
+    
+    def update_one(self, filter_dict, update_dict):
+        doc_id = filter_dict.get("_id")
+        if doc_id in self.data:
+            if "$set" in update_dict:
+                self.data[doc_id].update(update_dict["$set"])
+            elif "$push" in update_dict:
+                for key, value in update_dict["$push"].items():
+                    if key not in self.data[doc_id]:
+                        self.data[doc_id][key] = []
+                    self.data[doc_id][key].append(value)
+        return type('UpdateResult', (), {'modified_count': 1 if doc_id in self.data else 0})()
+
+# Create in-memory collections
+activities_collection = InMemoryCollection(activities_data)
+teachers_collection = InMemoryCollection(teachers_data)
 
 # Methods
 def hash_password(password):
