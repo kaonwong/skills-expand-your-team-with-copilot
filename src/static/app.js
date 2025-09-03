@@ -474,6 +474,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function displayFilteredActivities() {
     // Clear both views
     activitiesList.innerHTML = "";
+    // Reset group mode class
+    activitiesList.classList.remove("group-mode");
     if (calendarBody) {
       calendarBody.innerHTML = "";
     }
@@ -552,6 +554,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to render activities grouped by category
   function renderGroupedActivities(filteredActivities) {
+    // Add class to indicate group mode for CSS styling
+    activitiesList.classList.add("group-mode");
+    
     // Group activities by category
     const groupedActivities = {};
     

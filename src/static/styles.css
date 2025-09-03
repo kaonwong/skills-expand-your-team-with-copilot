@@ -654,6 +654,18 @@ footer {
   margin-bottom: 20px;
 }
 
+/* When in group mode, arrange category groups in a grid */
+#activities-list.group-mode {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+#activities-list.group-mode .category-group {
+  margin-bottom: 0;
+}
+
 .category-group-header {
   background-color: var(--primary);
   color: white;
@@ -710,6 +722,11 @@ footer {
 
   #activities-list {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+
+  /* In group mode on mobile, stack groups vertically */
+  #activities-list.group-mode {
+    grid-template-columns: 1fr;
   }
 
   .sidebar-filters {
