@@ -10,7 +10,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 import os
 from pathlib import Path
-from backend import routers, database
+from backend import database
+from backend.routers import activities, auth
 
 # Initialize web host
 app = FastAPI(
@@ -31,8 +32,8 @@ def root():
     return RedirectResponse(url="/static/index.html")
 
 # Include routers
-app.include_router(routers.activities.router)
-app.include_router(routers.auth.router)
+app.include_router(activities.router)
+app.include_router(auth.router)
 
 # Run the application
 if __name__ == "__main__":

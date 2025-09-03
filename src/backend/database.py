@@ -11,37 +11,99 @@ teachers_data = {}
 
 # Simple in-memory collections simulation
 class InMemoryCollection:
-    def __init__(self, data_store):
-        self.data = data_store
+    def __init__(self, data_dict):
+        self.data = data_dict
     
-    def count_documents(self, filter_dict):
-        return len(self.data)
+    def find(self, query=None):
+        """Find documents matching query"""
+        if not query:
+            # Return all documents with _id as the key
+            for key, value in self.data.items():
+                doc = value.copy()
+                doc['_id'] = key
+                yield doc
+        else:
+            # Simple query implementation
+            for key, value in self.data.items():
+                if self._matches_query(value, query):
+                    doc = value.copy()
+                    doc['_id'] = key
+                    yield doc
     
-    def insert_one(self, document):
-        doc_id = document.get("_id", len(self.data))
-        self.data[doc_id] = document
-        return type('InsertResult', (), {'inserted_id': doc_id})()
+    def find_one(self, query):
+        """Find one document matching query"""
+        if isinstance(query, dict) and '_id' in query:
+            # Direct lookup by _id
+            key = query['_id']
+            if key in self.data:
+                doc = self.data[key].copy()
+                doc['_id'] = key
+                return doc
+            return None
+        
+        # Search through documents
+        for doc in self.find(query):
+            return doc
+        return None
     
-    def find_one(self, filter_dict):
-        doc_id = filter_dict.get("_id")
-        return self.data.get(doc_id)
+    def update_one(self, query, update):
+        """Update one document"""
+        if isinstance(query, dict) and '_id' in query:
+            key = query['_id']
+            if key in self.data:
+                if '$push' in update:
+                    for field, value in update['$push'].items():
+                        if field in self.data[key]:
+                            self.data[key][field].append(value)
+                        else:
+                            self.data[key][field] = [value]
+                elif '$pull' in update:
+                    for field, value in update['$pull'].items():
+                        if field in self.data[key] and value in self.data[key][field]:
+                            self.data[key][field].remove(value)
+                return type('UpdateResult', (), {'modified_count': 1})()
+        return type('UpdateResult', (), {'modified_count': 0})()
     
-    def find(self, filter_dict=None):
-        if filter_dict is None:
-            return list(self.data.values())
-        return [doc for doc in self.data.values() if all(doc.get(k) == v for k, v in filter_dict.items())]
+    def aggregate(self, pipeline):
+        """Simple aggregation pipeline"""
+        # For getting unique days from schedule_details.days
+        if len(pipeline) == 2 and '$unwind' in pipeline[0] and '$group' in pipeline[1]:
+            days = set()
+            for value in self.data.values():
+                if 'schedule_details' in value and 'days' in value['schedule_details']:
+                    days.update(value['schedule_details']['days'])
+            return [{'_id': day} for day in sorted(days)]
+        return []
     
-    def update_one(self, filter_dict, update_dict):
-        doc_id = filter_dict.get("_id")
-        if doc_id in self.data:
-            if "$set" in update_dict:
-                self.data[doc_id].update(update_dict["$set"])
-            elif "$push" in update_dict:
-                for key, value in update_dict["$push"].items():
-                    if key not in self.data[doc_id]:
-                        self.data[doc_id][key] = []
-                    self.data[doc_id][key].append(value)
-        return type('UpdateResult', (), {'modified_count': 1 if doc_id in self.data else 0})()
+    def _matches_query(self, doc, query):
+        """Simple query matching"""
+        for key, condition in query.items():
+            if key.startswith('schedule_details.'):
+                field_path = key.split('.')
+                if len(field_path) == 2:
+                    nested_field = field_path[1]
+                    if 'schedule_details' not in doc or nested_field not in doc['schedule_details']:
+                        return False
+                    
+                    value = doc['schedule_details'][nested_field]
+                    if isinstance(condition, dict):
+                        if '$in' in condition:
+                            if value not in condition['$in']:
+                                return False
+                        elif '$gte' in condition:
+                            if value < condition['$gte']:
+                                return False
+                        elif '$lte' in condition:
+                            if value > condition['$lte']:
+                                return False
+                    elif value != condition:
+                        return False
+            elif key in doc:
+                if doc[key] != condition:
+                    return False
+            else:
+                return False
+        return True
 
 # Create in-memory collections
 activities_collection = InMemoryCollection(activities_data)
@@ -55,18 +117,15 @@ def hash_password(password):
 
 def init_database():
     """Initialize database if empty"""
-
-    # Initialize activities if empty
-    if activities_collection.count_documents({}) == 0:
-        for name, details in initial_activities.items():
-            activities_collection.insert_one({"_id": name, **details})
-            
-    # Initialize teacher accounts if empty
-    if teachers_collection.count_documents({}) == 0:
+    if not activities_data:
+        activities_data.update(initial_activities)
+    
+    if not teachers_data:
         for teacher in initial_teachers:
-            teachers_collection.insert_one({"_id": teacher["username"], **teacher})
+            username = teacher.pop('username')
+            teachers_data[username] = teacher
 
-# Initial database if empty
+# Initial database data
 initial_activities = {
     "Chess Club": {
         "description": "Learn strategies and compete in chess tournaments",
@@ -77,7 +136,7 @@ initial_activities = {
             "end_time": "16:45"
         },
         "max_participants": 12,
-        "participants": ["michael@mergington.edu", "daniel@mergington.edu"]
+        "participants": ["alex@mergington.edu", "sarah@mergington.edu"]
     },
     "Programming Class": {
         "description": "Learn programming fundamentals and build software projects",
@@ -121,6 +180,28 @@ initial_activities = {
             "end_time": "17:00"
         },
         "max_participants": 15,
+        "participants": ["michael@mergington.edu", "daniel@mergington.edu"]
+    },
+    "Math Club": {
+        "description": "Solve challenging problems and prepare for math competitions",
+        "schedule": "Tuesdays, 7:15 AM - 8:00 AM",
+        "schedule_details": {
+            "days": ["Tuesday"],
+            "start_time": "07:15",
+            "end_time": "08:00"
+        },
+        "max_participants": 10,
+        "participants": ["james@mergington.edu", "benjamin@mergington.edu"]
+    },
+    "Debate Team": {
+        "description": "Develop public speaking and argumentation skills",
+        "schedule": "Fridays, 3:30 PM - 5:30 PM",
+        "schedule_details": {
+            "days": ["Friday"],
+            "start_time": "15:30",
+            "end_time": "17:30"
+        },
+        "max_participants": 12,
         "participants": ["ava@mergington.edu", "mia@mergington.edu"]
     },
     "Art Club": {
@@ -144,28 +225,6 @@ initial_activities = {
         },
         "max_participants": 20,
         "participants": ["ella@mergington.edu", "scarlett@mergington.edu"]
-    },
-    "Math Club": {
-        "description": "Solve challenging problems and prepare for math competitions",
-        "schedule": "Tuesdays, 7:15 AM - 8:00 AM",
-        "schedule_details": {
-            "days": ["Tuesday"],
-            "start_time": "07:15",
-            "end_time": "08:00"
-        },
-        "max_participants": 10,
-        "participants": ["james@mergington.edu", "benjamin@mergington.edu"]
-    },
-    "Debate Team": {
-        "description": "Develop public speaking and argumentation skills",
-        "schedule": "Fridays, 3:30 PM - 5:30 PM",
-        "schedule_details": {
-            "days": ["Friday"],
-            "start_time": "15:30",
-            "end_time": "17:30"
-        },
-        "max_participants": 12,
-        "participants": ["charlotte@mergington.edu", "amelia@mergington.edu"]
     },
     "Weekend Robotics Workshop": {
         "description": "Build and program robots in our state-of-the-art workshop",
@@ -233,4 +292,3 @@ initial_teachers = [
         "role": "admin"
     }
 ]
-
