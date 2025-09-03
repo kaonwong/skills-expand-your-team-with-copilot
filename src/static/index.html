@@ -10,6 +10,16 @@
     <header>
       <h1>Mergington High School</h1>
       <h2>Extracurricular Activities</h2>
+      <div id="view-controls">
+        <button id="card-view-btn" class="view-toggle active" data-view="card">
+          <span class="view-icon">📋</span>
+          <span>Card View</span>
+        </button>
+        <button id="calendar-view-btn" class="view-toggle" data-view="calendar">
+          <span class="view-icon">📅</span>
+          <span>Calendar View</span>
+        </button>
+      </div>
       <div id="user-controls">
         <button id="theme-toggle" class="icon-button" title="Toggle dark mode">
           <span class="theme-icon">🌙</span>
@@ -109,6 +119,23 @@
             <div id="activities-list">
               <!-- Activities will be loaded here -->
               <p>Loading activities...</p>
+            </div>
+            <div id="calendar-view" class="hidden">
+              <div class="calendar-grid">
+                <div class="calendar-header">
+                  <div class="time-column-header">Time</div>
+                  <div class="day-header">Sunday</div>
+                  <div class="day-header">Monday</div>
+                  <div class="day-header">Tuesday</div>
+                  <div class="day-header">Wednesday</div>
+                  <div class="day-header">Thursday</div>
+                  <div class="day-header">Friday</div>
+                  <div class="day-header">Saturday</div>
+                </div>
+                <div class="calendar-body" id="calendar-body">
+                  <!-- Calendar time slots will be generated here -->
+                </div>
+              </div>
             </div>
             <div id="message" class="hidden message"></div>
           </div>

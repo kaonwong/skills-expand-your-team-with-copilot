@@ -29,6 +29,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const themeToggle = document.getElementById("theme-toggle");
   const themeIcon = document.querySelector(".theme-icon");
 
+  // View toggle elements
+  const cardViewBtn = document.getElementById("card-view-btn");
+  const calendarViewBtn = document.getElementById("calendar-view-btn");
+  const calendarView = document.getElementById("calendar-view");
+  const calendarBody = document.getElementById("calendar-body");
+
   // Activity categories with corresponding colors
   const activityTypes = {
     sports: { label: "Sports", color: "#e8f5e9", textColor: "#2e7d32" },
@@ -44,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let searchQuery = "";
   let currentDay = "";
   let currentTimeRange = "";
+  let currentView = "card"; // Track current view mode
 
   // Authentication state
   let currentUser = null;
@@ -459,8 +466,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to display filtered activities
   function displayFilteredActivities() {
-    // Clear the activities list
+    // Clear both views
     activitiesList.innerHTML = "";
+    if (calendarBody) {
+      calendarBody.innerHTML = "";
+    }
 
     // Apply client-side filtering - this handles category filter and search, plus weekend filter
     let filteredActivities = {};
@@ -505,18 +515,221 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Check if there are any results
     if (Object.keys(filteredActivities).length === 0) {
-      activitiesList.innerHTML = `
+      const noResultsHtml = `
         <div class="no-results">
           <h4>No activities found</h4>
           <p>Try adjusting your search or filter criteria</p>
         </div>
       `;
+      
+      if (currentView === "card") {
+        activitiesList.innerHTML = noResultsHtml;
+      } else {
+        calendarBody.innerHTML = noResultsHtml;
+      }
       return;
     }
 
-    // Display filtered activities
-    Object.entries(filteredActivities).forEach(([name, details]) => {
-      renderActivityCard(name, details);
+    // Display filtered activities based on current view
+    if (currentView === "card") {
+      Object.entries(filteredActivities).forEach(([name, details]) => {
+        renderActivityCard(name, details);
+      });
+    } else {
+      renderCalendarView(filteredActivities);
+    }
+  }
+
+  // Function to update view toggle buttons
+  function updateViewToggle() {
+    // Update button active states
+    cardViewBtn.classList.toggle("active", currentView === "card");
+    calendarViewBtn.classList.toggle("active", currentView === "calendar");
+    
+    // Show/hide appropriate views
+    if (currentView === "card") {
+      activitiesList.classList.remove("hidden");
+      calendarView.classList.add("hidden");
+    } else {
+      activitiesList.classList.add("hidden");
+      calendarView.classList.remove("hidden");
+    }
+  }
+
+  // Function to render calendar view
+  function renderCalendarView(filteredActivities) {
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const timeSlots = generateTimeSlots();
+    
+    // Create calendar grid
+    let calendarHtml = "";
+    
+    // Generate time slots
+    timeSlots.forEach(timeSlot => {
+      calendarHtml += `<div class="time-slot">`;
+      calendarHtml += `<div class="time-label">${timeSlot.display}</div>`;
+      
+      days.forEach(day => {
+        const activitiesInSlot = getActivitiesForDayAndTime(filteredActivities, day, timeSlot);
+        const cellClass = activitiesInSlot.length > 1 ? 
+          (activitiesInSlot.length > 2 ? "day-cell has-triple" : "day-cell has-multiple") : 
+          "day-cell";
+        
+        calendarHtml += `<div class="${cellClass}">`;
+        activitiesInSlot.forEach(activity => {
+          const activityType = getActivityType(activity.name, activity.details.description);
+          const enrollment = `${activity.details.participants.length}/${activity.details.max_participants}`;
+          
+          calendarHtml += `
+            <div class="calendar-activity ${activityType}" 
+                 data-activity-name="${activity.name}"
+                 data-activity-details='${JSON.stringify(activity.details)}'>
+              <div class="activity-name">${activity.name}</div>
+              <div class="activity-enrollment">${enrollment}</div>
+            </div>
+          `;
+        });
+        calendarHtml += `</div>`;
+      });
+      
+      calendarHtml += `</div>`;
+    });
+    
+    calendarBody.innerHTML = calendarHtml;
+    
+    // Add hover event listeners for tooltips
+    addCalendarTooltips();
+  }
+
+  // Function to generate time slots for calendar
+  function generateTimeSlots() {
+    const slots = [];
+    
+    // Early morning slots (6:00 AM - 8:00 AM)
+    for (let hour = 6; hour < 8; hour++) {
+      slots.push({
+        start: `${hour.toString().padStart(2, '0')}:00`,
+        end: `${(hour + 1).toString().padStart(2, '0')}:00`,
+        display: formatTimeDisplay(`${hour.toString().padStart(2, '0')}:00`)
+      });
+    }
+    
+    // Afternoon slots (3:00 PM - 6:00 PM)
+    for (let hour = 15; hour < 18; hour++) {
+      slots.push({
+        start: `${hour.toString().padStart(2, '0')}:00`,
+        end: `${(hour + 1).toString().padStart(2, '0')}:00`,
+        display: formatTimeDisplay(`${hour.toString().padStart(2, '0')}:00`)
+      });
+    }
+    
+    // Weekend slots (10:00 AM - 6:00 PM)
+    for (let hour = 10; hour < 18; hour++) {
+      if (hour < 15 || hour >= 18) { // Don't duplicate afternoon slots
+        const timeStr = `${hour.toString().padStart(2, '0')}:00`;
+        if (!slots.some(slot => slot.start === timeStr)) {
+          slots.push({
+            start: timeStr,
+            end: `${(hour + 1).toString().padStart(2, '0')}:00`,
+            display: formatTimeDisplay(timeStr)
+          });
+        }
+      }
+    }
+    
+    // Evening slots (7:00 PM - 9:00 PM) for evening activities
+    for (let hour = 19; hour < 21; hour++) {
+      slots.push({
+        start: `${hour.toString().padStart(2, '0')}:00`,
+        end: `${(hour + 1).toString().padStart(2, '0')}:00`,
+        display: formatTimeDisplay(`${hour.toString().padStart(2, '0')}:00`)
+      });
+    }
+    
+    return slots.sort((a, b) => a.start.localeCompare(b.start));
+  }
+
+  // Function to format time for display
+  function formatTimeDisplay(time24) {
+    const [hours, minutes] = time24.split(":").map(num => parseInt(num));
+    const period = hours >= 12 ? "PM" : "AM";
+    const displayHours = hours % 12 || 12;
+    return `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`;
+  }
+
+  // Function to get activities for a specific day and time slot
+  function getActivitiesForDayAndTime(activities, day, timeSlot) {
+    const result = [];
+    
+    Object.entries(activities).forEach(([name, details]) => {
+      if (!details.schedule_details) return;
+      
+      const activityDays = details.schedule_details.days;
+      const activityStart = details.schedule_details.start_time;
+      const activityEnd = details.schedule_details.end_time;
+      
+      // Check if activity is on this day
+      if (activityDays.includes(day)) {
+        // Check if activity time overlaps with time slot
+        if (timeOverlaps(activityStart, activityEnd, timeSlot.start, timeSlot.end)) {
+          result.push({ name, details });
+        }
+      }
+    });
+    
+    return result;
+  }
+
+  // Function to check if two time ranges overlap
+  function timeOverlaps(start1, end1, start2, end2) {
+    return start1 < end2 && end1 > start2;
+  }
+
+  // Function to add tooltip functionality to calendar activities
+  function addCalendarTooltips() {
+    const calendarActivities = document.querySelectorAll('.calendar-activity');
+    let tooltip = null;
+    
+    calendarActivities.forEach(activity => {
+      activity.addEventListener('mouseenter', (e) => {
+        const activityName = e.target.dataset.activityName;
+        const activityDetails = JSON.parse(e.target.dataset.activityDetails);
+        
+        // Create tooltip
+        tooltip = document.createElement('div');
+        tooltip.className = 'calendar-tooltip show';
+        tooltip.innerHTML = `
+          <div class="tooltip-title">${activityName}</div>
+          <div class="tooltip-description">${activityDetails.description}</div>
+          <div class="tooltip-schedule"><strong>Schedule:</strong> ${formatSchedule(activityDetails)}</div>
+          <div class="tooltip-enrollment">
+            <strong>Enrollment:</strong> ${activityDetails.participants.length}/${activityDetails.max_participants}
+          </div>
+        `;
+        
+        document.body.appendChild(tooltip);
+        
+        // Position tooltip
+        const rect = e.target.getBoundingClientRect();
+        tooltip.style.left = `${rect.left + window.scrollX}px`;
+        tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+        
+        // Adjust if tooltip goes off screen
+        const tooltipRect = tooltip.getBoundingClientRect();
+        if (tooltipRect.right > window.innerWidth) {
+          tooltip.style.left = `${window.innerWidth - tooltipRect.width - 10}px`;
+        }
+        if (tooltipRect.bottom > window.innerHeight) {
+          tooltip.style.top = `${rect.top + window.scrollY - tooltipRect.height - 5}px`;
+        }
+      });
+      
+      activity.addEventListener('mouseleave', () => {
+        if (tooltip) {
+          tooltip.remove();
+          tooltip = null;
+        }
+      });
     });
   }
 
@@ -687,6 +900,23 @@ document.addEventListener("DOMContentLoaded", () => {
       currentTimeRange = button.dataset.time;
       fetchActivities();
     });
+  });
+
+  // Add event listeners for view toggle buttons
+  cardViewBtn.addEventListener("click", () => {
+    if (currentView !== "card") {
+      currentView = "card";
+      updateViewToggle();
+      displayFilteredActivities();
+    }
+  });
+
+  calendarViewBtn.addEventListener("click", () => {
+    if (currentView !== "calendar") {
+      currentView = "calendar";
+      updateViewToggle();
+      displayFilteredActivities();
+    }
   });
 
   // Open registration modal
@@ -913,5 +1143,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeTheme();
   checkAuthentication();
   initializeFilters();
+  updateViewToggle(); // Initialize view toggle state
   fetchActivities();
 });

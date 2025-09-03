@@ -107,6 +107,40 @@ header h2 {
   font-size: 1.2rem;
 }
 
+/* View controls */
+#view-controls {
+  display: flex;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--primary-text);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.view-toggle.active {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.view-icon {
+  font-size: 1rem;
+}
+
 main {
   display: flex;
   flex-wrap: wrap;
@@ -707,4 +741,197 @@ footer {
 
 #logout-button:hover {
   background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Calendar View Styles */
+#calendar-view {
+  width: 100%;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: var(--surface);
+}
+
+.calendar-header {
+  display: contents;
+}
+
+.time-column-header,
+.day-header {
+  background-color: var(--primary);
+  color: var(--primary-text);
+  padding: 10px 8px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  text-align: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.time-column-header {
+  font-size: 0.75rem;
+}
+
+.calendar-body {
+  display: contents;
+}
+
+.time-slot {
+  display: contents;
+}
+
+.time-label {
+  background-color: var(--border-light);
+  padding: 8px 6px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-align: center;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.day-cell {
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  min-height: 60px;
+  position: relative;
+  padding: 2px;
+  background-color: var(--surface);
+}
+
+.calendar-activity {
+  background-color: var(--primary-light);
+  color: white;
+  padding: 3px 6px;
+  margin: 1px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  line-height: 1.2;
+}
+
+.calendar-activity:hover {
+  background-color: var(--primary);
+  transform: scale(1.02);
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.calendar-activity.sports {
+  background-color: #2e7d32;
+}
+
+.calendar-activity.arts {
+  background-color: #7b1fa2;
+}
+
+.calendar-activity.academic {
+  background-color: #1565c0;
+}
+
+.calendar-activity.community {
+  background-color: #e65100;
+}
+
+.calendar-activity.technology {
+  background-color: #3949ab;
+}
+
+.activity-name {
+  font-weight: bold;
+  margin-bottom: 1px;
+}
+
+.activity-enrollment {
+  font-size: 0.6rem;
+  opacity: 0.9;
+}
+
+/* Multiple activities in same slot */
+.day-cell.has-multiple .calendar-activity {
+  width: calc(50% - 1px);
+  display: inline-block;
+  vertical-align: top;
+}
+
+.day-cell.has-triple .calendar-activity {
+  width: calc(33.33% - 1px);
+  font-size: 0.65rem;
+}
+
+/* Calendar tooltip */
+.calendar-tooltip {
+  position: absolute;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 0.8rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-width: 300px;
+  display: none;
+  pointer-events: none;
+}
+
+.calendar-tooltip.show {
+  display: block;
+}
+
+.tooltip-title {
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.tooltip-description {
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.tooltip-schedule {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.tooltip-enrollment {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Responsive calendar */
+@media (max-width: 768px) {
+  .calendar-grid {
+    grid-template-columns: 60px repeat(7, 1fr);
+    font-size: 0.8rem;
+  }
+  
+  .time-column-header,
+  .day-header {
+    padding: 8px 4px;
+    font-size: 0.75rem;
+  }
+  
+  .time-label {
+    font-size: 0.6rem;
+    padding: 6px 3px;
+  }
+  
+  .calendar-activity {
+    font-size: 0.6rem;
+    padding: 2px 4px;
+  }
+  
+  .day-cell {
+    min-height: 50px;
+  }
 }
