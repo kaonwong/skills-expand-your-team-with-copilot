@@ -26,9 +26,35 @@ document.addEventListener("DOMContentLoaded", () => {
   const displayName = document.getElementById("display-name");
   const logoutButton = document.getElementById("logout-button");
   const loginModal = document.getElementById("login-modal");
-  const loginForm = document.getElementById("login-form");
+  const teacherLoginForm = document.getElementById("teacher-login-form");
+  const studentLoginForm = document.getElementById("student-login-form");
   const closeLoginModal = document.querySelector(".close-login-modal");
   const loginMessage = document.getElementById("login-message");
+  
+  // Registration elements
+  const registerModal = document.getElementById("register-modal");
+  const registerForm = document.getElementById("register-form");
+  const closeRegisterModal = document.querySelector(".close-register-modal");
+  const registerMessage = document.getElementById("register-message");
+  
+  // Forgot password elements
+  const forgotPasswordModal = document.getElementById("forgot-password-modal");
+  const forgotPasswordForm = document.getElementById("forgot-password-form");
+  const resetPasswordForm = document.getElementById("reset-password-form");
+  const closeForgotPasswordModal = document.querySelector(".close-forgot-password-modal");
+  const forgotPasswordMessage = document.getElementById("forgot-password-message");
+  const forgotPasswordStep1 = document.getElementById("forgot-password-step-1");
+  const forgotPasswordStep2 = document.getElementById("forgot-password-step-2");
+  
+  // Auth tab elements
+  const authTabs = document.querySelectorAll(".auth-tab");
+  const authForms = document.querySelectorAll(".auth-form");
+  
+  // Auth link elements
+  const showRegisterLink = document.getElementById("show-register-link");
+  const showForgotPasswordLink = document.getElementById("show-forgot-password-link");
+  const showLoginLink = document.getElementById("show-login-link");
+  const backToLoginLink = document.getElementById("back-to-login-link");
 
   // Theme toggle elements
   const themeToggle = document.getElementById("theme-toggle");
@@ -123,7 +149,11 @@ document.addEventListener("DOMContentLoaded", () => {
         currentUser = JSON.parse(savedUser);
         updateAuthUI();
         // Verify the stored user with the server
-        validateUserSession(currentUser.username);
+        if (currentUser.user_type === "teacher") {
+          validateTeacherSession(currentUser.username);
+        } else if (currentUser.user_type === "student") {
+          validateStudentSession(currentUser.email);
+        }
       } catch (error) {
         console.error("Error parsing saved user", error);
         logout(); // Clear invalid data
@@ -134,8 +164,8 @@ document.addEventListener("DOMContentLoaded", () => {
     updateAuthBodyClass();
   }
 
-  // Validate user session with the server
-  async function validateUserSession(username) {
+  // Validate teacher session with the server
+  async function validateTeacherSession(username) {
     try {
       const response = await fetch(
         `/auth/check-session?username=${encodeURIComponent(username)}`
@@ -153,7 +183,30 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("currentUser", JSON.stringify(userData));
       updateAuthUI();
     } catch (error) {
-      console.error("Error validating session:", error);
+      console.error("Error validating teacher session:", error);
+    }
+  }
+
+  // Validate student session with the server
+  async function validateStudentSession(email) {
+    try {
+      const response = await fetch(
+        `/auth/check-student-session?email=${encodeURIComponent(email)}`
+      );
+
+      if (!response.ok) {
+        // Session invalid, log out
+        logout();
+        return;
+      }
+
+      // Session is valid, update user data
+      const userData = await response.json();
+      currentUser = userData;
+      localStorage.setItem("currentUser", JSON.stringify(userData));
+      updateAuthUI();
+    } catch (error) {
+      console.error("Error validating student session:", error);
     }
   }
 
@@ -162,7 +215,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (currentUser) {
       loginButton.classList.add("hidden");
       userInfo.classList.remove("hidden");
-      displayName.textContent = currentUser.display_name;
+      if (currentUser.user_type === "teacher") {
+        displayName.textContent = currentUser.display_name;
+      } else if (currentUser.user_type === "student") {
+        displayName.textContent = `${currentUser.first_name} ${currentUser.last_name}`;
+      }
     } else {
       loginButton.classList.remove("hidden");
       userInfo.classList.add("hidden");
@@ -183,8 +240,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Login function
-  async function login(username, password) {
+  // Teacher login function
+  async function teacherLogin(username, password) {
     try {
       const response = await fetch(
         `/auth/login?username=${encodeURIComponent(
@@ -213,8 +270,174 @@ document.addEventListener("DOMContentLoaded", () => {
       showMessage(`Welcome, ${currentUser.display_name}!`, "success");
       return true;
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error("Error during teacher login:", error);
       showLoginMessage("Login failed. Please try again.", "error");
+      return false;
+    }
+  }
+
+  // Student login function
+  async function studentLogin(email, password) {
+    try {
+      const response = await fetch(`/auth/student-login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        showLoginMessage(
+          data.detail || "Invalid email or password",
+          "error"
+        );
+        return false;
+      }
+
+      // Login successful
+      currentUser = data;
+      localStorage.setItem("currentUser", JSON.stringify(data));
+      updateAuthUI();
+      closeLoginModalHandler();
+      showMessage(`Welcome, ${currentUser.first_name}!`, "success");
+      return true;
+    } catch (error) {
+      console.error("Error during student login:", error);
+      showLoginMessage("Login failed. Please try again.", "error");
+      return false;
+    }
+  }
+
+  // Student registration function
+  async function registerStudent(studentData) {
+    try {
+      const response = await fetch(`/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(studentData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        showRegisterMessage(
+          data.detail || "Registration failed",
+          "error"
+        );
+        return false;
+      }
+
+      // Registration successful
+      showRegisterMessage(
+        `Registration successful! You can now login with your email.`,
+        "success"
+      );
+      
+      // Switch to login modal after a delay
+      setTimeout(() => {
+        closeRegisterModalHandler();
+        openLoginModal();
+        switchAuthTab("student-login");
+      }, 2000);
+      
+      return true;
+    } catch (error) {
+      console.error("Error during registration:", error);
+      showRegisterMessage("Registration failed. Please try again.", "error");
+      return false;
+    }
+  }
+
+  // Forgot password function
+  async function forgotPassword(email) {
+    try {
+      const response = await fetch(`/auth/forgot-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        showForgotPasswordMessage(
+          data.detail || "Error sending reset token",
+          "error"
+        );
+        return false;
+      }
+
+      // Show success message and token (in production, token would be sent via email)
+      showForgotPasswordMessage(
+        `Reset token: ${data.token}\n\nIn production, this would be sent to your email.`,
+        "info"
+      );
+      
+      // Show step 2
+      forgotPasswordStep1.classList.add("hidden");
+      forgotPasswordStep2.classList.remove("hidden");
+      
+      return true;
+    } catch (error) {
+      console.error("Error during forgot password:", error);
+      showForgotPasswordMessage("Error sending reset token. Please try again.", "error");
+      return false;
+    }
+  }
+
+  // Reset password function
+  async function resetPassword(token, newPassword) {
+    try {
+      const response = await fetch(`/auth/reset-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: token,
+          new_password: newPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        showForgotPasswordMessage(
+          data.detail || "Error resetting password",
+          "error"
+        );
+        return false;
+      }
+
+      // Password reset successful
+      showForgotPasswordMessage(
+        "Password reset successful! You can now login with your new password.",
+        "success"
+      );
+      
+      // Switch to login modal after a delay
+      setTimeout(() => {
+        closeForgotPasswordModalHandler();
+        openLoginModal();
+        switchAuthTab("student-login");
+      }, 2000);
+      
+      return true;
+    } catch (error) {
+      console.error("Error during password reset:", error);
+      showForgotPasswordMessage("Error resetting password. Please try again.", "error");
       return false;
     }
   }
@@ -234,12 +457,47 @@ document.addEventListener("DOMContentLoaded", () => {
     loginMessage.classList.remove("hidden");
   }
 
+  // Show message in register modal
+  function showRegisterMessage(text, type) {
+    registerMessage.textContent = text;
+    registerMessage.className = `message ${type}`;
+    registerMessage.classList.remove("hidden");
+  }
+
+  // Show message in forgot password modal
+  function showForgotPasswordMessage(text, type) {
+    forgotPasswordMessage.textContent = text;
+    forgotPasswordMessage.className = `message ${type}`;
+    forgotPasswordMessage.classList.remove("hidden");
+  }
+
+  // Switch between auth tabs
+  function switchAuthTab(tabName) {
+    authTabs.forEach(tab => {
+      if (tab.dataset.tab === tabName) {
+        tab.classList.add("active");
+      } else {
+        tab.classList.remove("active");
+      }
+    });
+
+    authForms.forEach(form => {
+      if (form.id === tabName + "-form") {
+        form.classList.add("active");
+      } else {
+        form.classList.remove("active");
+      }
+    });
+  }
+
   // Open login modal
   function openLoginModal() {
     loginModal.classList.remove("hidden");
     loginModal.classList.add("show");
     loginMessage.classList.add("hidden");
-    loginForm.reset();
+    teacherLoginForm.reset();
+    studentLoginForm.reset();
+    switchAuthTab("teacher-login"); // Default to teacher login
   }
 
   // Close login modal
@@ -247,7 +505,48 @@ document.addEventListener("DOMContentLoaded", () => {
     loginModal.classList.remove("show");
     setTimeout(() => {
       loginModal.classList.add("hidden");
-      loginForm.reset();
+      teacherLoginForm.reset();
+      studentLoginForm.reset();
+    }, 300);
+  }
+
+  // Open register modal
+  function openRegisterModal() {
+    registerModal.classList.remove("hidden");
+    registerModal.classList.add("show");
+    registerMessage.classList.add("hidden");
+    registerForm.reset();
+  }
+
+  // Close register modal
+  function closeRegisterModalHandler() {
+    registerModal.classList.remove("show");
+    setTimeout(() => {
+      registerModal.classList.add("hidden");
+      registerForm.reset();
+    }, 300);
+  }
+
+  // Open forgot password modal
+  function openForgotPasswordModal() {
+    forgotPasswordModal.classList.remove("hidden");
+    forgotPasswordModal.classList.add("show");
+    forgotPasswordMessage.classList.add("hidden");
+    forgotPasswordForm.reset();
+    resetPasswordForm.reset();
+    forgotPasswordStep1.classList.remove("hidden");
+    forgotPasswordStep2.classList.add("hidden");
+  }
+
+  // Close forgot password modal
+  function closeForgotPasswordModalHandler() {
+    forgotPasswordModal.classList.remove("show");
+    setTimeout(() => {
+      forgotPasswordModal.classList.add("hidden");
+      forgotPasswordForm.reset();
+      resetPasswordForm.reset();
+      forgotPasswordStep1.classList.remove("hidden");
+      forgotPasswordStep2.classList.add("hidden");
     }, 300);
   }
 
@@ -293,23 +592,100 @@ document.addEventListener("DOMContentLoaded", () => {
   loginButton.addEventListener("click", openLoginModal);
   logoutButton.addEventListener("click", logout);
   closeLoginModal.addEventListener("click", closeLoginModalHandler);
+  closeRegisterModal.addEventListener("click", closeRegisterModalHandler);
+  closeForgotPasswordModal.addEventListener("click", closeForgotPasswordModalHandler);
+
+  // Auth tab switching
+  authTabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      switchAuthTab(tab.dataset.tab);
+    });
+  });
+
+  // Auth link handlers
+  showRegisterLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    closeLoginModalHandler();
+    openRegisterModal();
+  });
+
+  showForgotPasswordLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    closeLoginModalHandler();
+    openForgotPasswordModal();
+  });
+
+  showLoginLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    closeRegisterModalHandler();
+    openLoginModal();
+    switchAuthTab("student-login");
+  });
+
+  backToLoginLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    closeForgotPasswordModalHandler();
+    openLoginModal();
+    switchAuthTab("student-login");
+  });
 
   // Theme toggle event listener
   themeToggle.addEventListener("click", toggleTheme);
 
-  // Close login modal when clicking outside
+  // Close modals when clicking outside
   window.addEventListener("click", (event) => {
     if (event.target === loginModal) {
       closeLoginModalHandler();
+    } else if (event.target === registerModal) {
+      closeRegisterModalHandler();
+    } else if (event.target === forgotPasswordModal) {
+      closeForgotPasswordModalHandler();
     }
   });
 
-  // Handle login form submission
-  loginForm.addEventListener("submit", async (event) => {
+  // Handle teacher login form submission
+  teacherLoginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    await login(username, password);
+    const username = document.getElementById("teacher-username").value;
+    const password = document.getElementById("teacher-password").value;
+    await teacherLogin(username, password);
+  });
+
+  // Handle student login form submission
+  studentLoginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const email = document.getElementById("student-email").value;
+    const password = document.getElementById("student-password").value;
+    await studentLogin(email, password);
+  });
+
+  // Handle registration form submission
+  registerForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const studentData = {
+      email: document.getElementById("register-email").value,
+      first_name: document.getElementById("register-first-name").value,
+      last_name: document.getElementById("register-last-name").value,
+      password: document.getElementById("register-password").value,
+      grade: document.getElementById("register-grade").value,
+      phone: document.getElementById("register-phone").value,
+    };
+    await registerStudent(studentData);
+  });
+
+  // Handle forgot password form submission
+  forgotPasswordForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const email = document.getElementById("forgot-email").value;
+    await forgotPassword(email);
+  });
+
+  // Handle reset password form submission
+  resetPasswordForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const token = document.getElementById("reset-token").value;
+    const newPassword = document.getElementById("new-password").value;
+    await resetPassword(token, newPassword);
   });
 
   // Show loading skeletons

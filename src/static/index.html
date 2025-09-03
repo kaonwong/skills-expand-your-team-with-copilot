@@ -193,31 +193,195 @@
     <div id="login-modal" class="modal hidden">
       <div class="modal-content">
         <span class="close-login-modal">&times;</span>
-        <h3>Teacher Login</h3>
-        <form id="login-form">
+        <h3 id="login-modal-title">Login</h3>
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="teacher-login">Teacher</button>
+          <button class="auth-tab" data-tab="student-login">Student</button>
+        </div>
+        
+        <!-- Teacher Login Form -->
+        <form id="teacher-login-form" class="auth-form active">
           <div class="form-group">
-            <label for="username">Username:</label>
+            <label for="teacher-username">Username:</label>
             <input
               type="text"
-              id="username"
+              id="teacher-username"
               required
               placeholder="Enter your username"
               autocomplete="username"
             />
           </div>
           <div class="form-group">
-            <label for="password">Password:</label>
+            <label for="teacher-password">Password:</label>
             <input
               type="password"
-              id="password"
+              id="teacher-password"
               required
               placeholder="Enter your password"
               autocomplete="current-password"
             />
           </div>
-          <button type="submit">Login</button>
+          <button type="submit">Login as Teacher</button>
         </form>
+        
+        <!-- Student Login Form -->
+        <form id="student-login-form" class="auth-form">
+          <div class="form-group">
+            <label for="student-email">Email:</label>
+            <input
+              type="email"
+              id="student-email"
+              required
+              placeholder="your-email@mergington.edu"
+              autocomplete="email"
+            />
+          </div>
+          <div class="form-group">
+            <label for="student-password">Password:</label>
+            <input
+              type="password"
+              id="student-password"
+              required
+              placeholder="Enter your password"
+              autocomplete="current-password"
+            />
+          </div>
+          <button type="submit">Login as Student</button>
+          <div class="auth-links">
+            <a href="#" id="show-register-link">Don't have an account? Register</a>
+            <a href="#" id="show-forgot-password-link">Forgot password?</a>
+          </div>
+        </form>
+        
         <div id="login-message" class="hidden message"></div>
+      </div>
+    </div>
+    
+    <!-- Registration Modal -->
+    <div id="register-modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close-register-modal">&times;</span>
+        <h3>Student Registration</h3>
+        <form id="register-form">
+          <div class="form-group">
+            <label for="register-email">Email:</label>
+            <input
+              type="email"
+              id="register-email"
+              required
+              placeholder="your-email@mergington.edu"
+              autocomplete="email"
+            />
+          </div>
+          <div class="form-group">
+            <label for="register-first-name">First Name:</label>
+            <input
+              type="text"
+              id="register-first-name"
+              required
+              placeholder="Enter your first name"
+              autocomplete="given-name"
+            />
+          </div>
+          <div class="form-group">
+            <label for="register-last-name">Last Name:</label>
+            <input
+              type="text"
+              id="register-last-name"
+              required
+              placeholder="Enter your last name"
+              autocomplete="family-name"
+            />
+          </div>
+          <div class="form-group">
+            <label for="register-password">Password:</label>
+            <input
+              type="password"
+              id="register-password"
+              required
+              placeholder="Enter a secure password"
+              autocomplete="new-password"
+            />
+          </div>
+          <div class="form-group">
+            <label for="register-grade">Grade:</label>
+            <select id="register-grade" required>
+              <option value="">Select your grade</option>
+              <option value="9">9th Grade</option>
+              <option value="10">10th Grade</option>
+              <option value="11">11th Grade</option>
+              <option value="12">12th Grade</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="register-phone">Phone Number:</label>
+            <input
+              type="tel"
+              id="register-phone"
+              required
+              placeholder="555-123-4567"
+              autocomplete="tel"
+            />
+          </div>
+          <button type="submit">Register</button>
+          <div class="auth-links">
+            <a href="#" id="show-login-link">Already have an account? Login</a>
+          </div>
+        </form>
+        <div id="register-message" class="hidden message"></div>
+      </div>
+    </div>
+    
+    <!-- Forgot Password Modal -->
+    <div id="forgot-password-modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close-forgot-password-modal">&times;</span>
+        <h3>Reset Password</h3>
+        <div id="forgot-password-step-1">
+          <form id="forgot-password-form">
+            <div class="form-group">
+              <label for="forgot-email">Email:</label>
+              <input
+                type="email"
+                id="forgot-email"
+                required
+                placeholder="your-email@mergington.edu"
+                autocomplete="email"
+              />
+            </div>
+            <button type="submit">Send Reset Token</button>
+            <div class="auth-links">
+              <a href="#" id="back-to-login-link">Back to Login</a>
+            </div>
+          </form>
+        </div>
+        
+        <div id="forgot-password-step-2" class="hidden">
+          <form id="reset-password-form">
+            <div class="form-group">
+              <label for="reset-token">Reset Token:</label>
+              <input
+                type="text"
+                id="reset-token"
+                required
+                placeholder="Enter the reset token"
+              />
+            </div>
+            <div class="form-group">
+              <label for="new-password">New Password:</label>
+              <input
+                type="password"
+                id="new-password"
+                required
+                placeholder="Enter your new password"
+                autocomplete="new-password"
+              />
+            </div>
+            <button type="submit">Reset Password</button>
+          </form>
+        </div>
+        
+        <div id="forgot-password-message" class="hidden message"></div>
       </div>
     </div>
 
