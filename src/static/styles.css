@@ -1,16 +1,16 @@
 /* Color palette */
 :root {
-  /* Primary colors */
-  --primary: #1a237e;
-  --primary-light: #534bae;
-  --primary-dark: #000051;
+  /* Primary colors - School Colors: Lime Green */
+  --primary: #32cd32;
+  --primary-light: #7fff00;
+  --primary-dark: #228b22;
   --primary-text: #ffffff;
 
-  /* Secondary colors */
-  --secondary: #ff6f00;
-  --secondary-light: #ffa040;
-  --secondary-dark: #c43e00;
-  --secondary-text: #ffffff;
+  /* Secondary colors - White and complementary */
+  --secondary: #ffffff;
+  --secondary-light: #f8f8f8;
+  --secondary-dark: #e0e0e0;
+  --secondary-text: #32cd32;
 
   /* Neutral colors */
   --background: #f5f5f5;
@@ -34,17 +34,17 @@
 
 /* Dark theme colors */
 body.dark-theme {
-  /* Primary colors - keep branding consistent but adjust for dark mode */
-  --primary: #3f51b5;
-  --primary-light: #7986cb;
-  --primary-dark: #1a237e;
+  /* Primary colors - School Colors: Lime Green (adjusted for dark mode) */
+  --primary: #32cd32;
+  --primary-light: #7fff00;
+  --primary-dark: #228b22;
   --primary-text: #ffffff;
 
-  /* Secondary colors */
-  --secondary: #ff9800;
-  --secondary-light: #ffb74d;
-  --secondary-dark: #f57f17;
-  --secondary-text: #000000;
+  /* Secondary colors - White and complementary for dark mode */
+  --secondary: #1e1e1e;
+  --secondary-light: #2a2a2a;
+  --secondary-dark: #121212;
+  --secondary-text: #32cd32;
 
   /* Neutral colors - dark theme */
   --background: #121212;
@@ -82,6 +82,36 @@ body {
   padding: 12px;
   background-color: var(--background);
   font-size: 0.9rem;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Animated Git branch lines background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: -1;
+  background-image: 
+    linear-gradient(45deg, transparent 40%, rgba(50, 205, 50, 0.1) 41%, rgba(50, 205, 50, 0.1) 43%, transparent 44%),
+    linear-gradient(-45deg, transparent 40%, rgba(50, 205, 50, 0.1) 41%, rgba(50, 205, 50, 0.1) 43%, transparent 44%),
+    linear-gradient(90deg, transparent 40%, rgba(50, 205, 50, 0.1) 41%, rgba(50, 205, 50, 0.1) 43%, transparent 44%);
+  background-size: 120px 120px, 80px 80px, 200px 200px;
+  background-position: 0 0, 40px 40px, 0 0;
+  animation: gitBranches 20s linear infinite;
+}
+
+@keyframes gitBranches {
+  0% {
+    background-position: 0 0, 40px 40px, 0 0;
+  }
+  100% {
+    background-position: 120px 120px, 120px 120px, 200px 200px;
+  }
 }
 
 header {
@@ -105,6 +135,52 @@ header h1 {
 
 header h2 {
   font-size: 1.2rem;
+}
+
+/* School mascots */
+#school-mascots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin: 10px 0;
+  flex-wrap: wrap;
+}
+
+.mascot {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid var(--primary-text);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: var(--surface);
+  padding: 5px;
+  object-fit: contain;
+}
+
+.mascot:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.mascot-emoji {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid var(--primary-text);
+  background-color: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.mascot-emoji:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  background-color: var(--secondary-light);
 }
 
 /* View controls */
