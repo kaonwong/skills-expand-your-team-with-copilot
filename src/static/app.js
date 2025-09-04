@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("activity-search");
   const searchButton = document.getElementById("search-button");
   const categoryFilters = document.querySelectorAll(".category-filter");
+  const emojiFilters = document.querySelectorAll(".emoji-filter");
   const dayFilters = document.querySelectorAll(".day-filter");
   const timeFilters = document.querySelectorAll(".time-filter");
   
@@ -1391,10 +1392,31 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", () => {
       // Update active class
       categoryFilters.forEach((btn) => btn.classList.remove("active"));
+      emojiFilters.forEach((btn) => btn.classList.remove("active"));
       button.classList.add("active");
 
       // Update current filter and display filtered activities
       currentFilter = button.dataset.category;
+      displayFilteredActivities();
+    });
+  });
+
+  // Add event listeners to emoji filter buttons
+  emojiFilters.forEach((emoji) => {
+    emoji.addEventListener("click", () => {
+      // Update active class
+      categoryFilters.forEach((btn) => btn.classList.remove("active"));
+      emojiFilters.forEach((btn) => btn.classList.remove("active"));
+      emoji.classList.add("active");
+
+      // Also update the corresponding category filter button to show it's active
+      const categoryButton = document.querySelector(`.category-filter[data-category="${emoji.dataset.category}"]`);
+      if (categoryButton) {
+        categoryButton.classList.add("active");
+      }
+
+      // Update current filter and display filtered activities
+      currentFilter = emoji.dataset.category;
       displayFilteredActivities();
     });
   });

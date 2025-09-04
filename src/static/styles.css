@@ -183,6 +183,14 @@ header h2 {
   background-color: var(--secondary-light);
 }
 
+.mascot-emoji.active {
+  background-color: var(--primary);
+  color: var(--primary-text);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(50, 205, 50, 0.4);
+  border-color: var(--primary-dark);
+}
+
 /* View controls */
 #view-controls {
   display: flex;
