@@ -632,16 +632,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Theme toggle event listener
   themeToggle.addEventListener("click", toggleTheme);
 
-  // Close modals when clicking outside
-  window.addEventListener("click", (event) => {
-    if (event.target === loginModal) {
-      closeLoginModalHandler();
-    } else if (event.target === registerModal) {
-      closeRegisterModalHandler();
-    } else if (event.target === forgotPasswordModal) {
-      closeForgotPasswordModalHandler();
-    }
-  });
+  // Modals can only be closed using the designated close button
 
   // Handle teacher login form submission
   teacherLoginForm.addEventListener("submit", async (event) => {
@@ -1481,12 +1472,7 @@ document.addEventListener("DOMContentLoaded", () => {
     closeRegistrationModalHandler
   );
 
-  // Close modal when clicking outside of it
-  window.addEventListener("click", (event) => {
-    if (event.target === registrationModal) {
-      closeRegistrationModalHandler();
-    }
-  });
+  // Registration modal can only be closed using the designated close button
 
   // Create and show confirmation dialog
   function showConfirmationDialog(message, confirmCallback) {
